@@ -17,7 +17,16 @@
     </author>
     <date/>
     <abstract>
-      <t>This specification...</t>
+      <t>OpenID Connect 1.0 is a simple identity layer on top of the OAuth 2.0
+        protocol. It enables Clients to verify the identity of the End-User
+        based on the authentication performed by an Authorization Server, as
+        well as to obtain basic profile information about the End-User in an
+        interoperable and REST-like manner.</t>
+        
+      <t>This document describes a cross-origin authentication flow which allows
+        Clients to directly control the authentication ceremony, initiate a
+        session at the Authorization Server, and request authorization from the
+        Authorization Server after the authentication ceremony is complete.</t>
     </abstract>
   </front>
   <middle>
