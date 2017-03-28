@@ -12,7 +12,17 @@ Expires: September 29, 2017                               March 28, 2017
 
 Abstract
 
-   This specification...
+   OpenID Connect 1.0 is a simple identity layer on top of the OAuth 2.0
+   protocol.  It enables Clients to verify the identity of the End-User
+   based on the authentication performed by an Authorization Server, as
+   well as to obtain basic profile information about the End-User in an
+   interoperable and REST-like manner.
+
+   This document describes a cross-origin authentication flow which
+   allows Clients to directly control the authentication ceremony,
+   initiate a session at the Authorization Server, and request
+   authorization from the Authorization Server after the authentication
+   ceremony is complete.
 
 Status of This Memo
 
@@ -40,16 +50,6 @@ Copyright Notice
    Provisions Relating to IETF Documents
    (http://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
-   carefully, as they describe your rights and restrictions with respect
-   to this document.  Code Components extracted from this document must
-   include Simplified BSD License text as described in Section 4.e of
-   the Trust Legal Provisions and are provided without warranty as
-   described in the Simplified BSD License.
-
-
-
-
-
 
 
 
@@ -57,6 +57,12 @@ Hanson                 Expires September 29, 2017               [Page 1]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
+
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
 
 1.  Introduction
 
@@ -88,12 +94,6 @@ Author's Address
 
    Email: jaredhanson@gmail.com
    URI:   http://www.jaredhanson.net/
-
-
-
-
-
-
 
 
 
