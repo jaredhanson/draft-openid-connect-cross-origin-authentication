@@ -82,6 +82,46 @@
       </t>
     </section>
     
+    <section title="Cross-Origin Authentication Endpoint">
+      <t>
+        The cross-origin authentication endpoint is used to authenticate an
+        End-User.  Authentication is requested by sending an HTTP POST request
+        directly from the Client, using XMLHttpRequest to the OP's cross-origin
+        authentication endpoint.
+      </t>
+      <t>
+        Use of the cross-origin authentication endpoint requires direct Client
+        access to the End-User's credentials.  The credentials should only used
+        when their is a high degree of trust between the End-User and the
+        Client.
+      </t>
+      <t>
+        Communication with the cross-origin authentication endpoint MUST utilize
+        TLS.
+      </t>
+      
+      <section title='Authentication Request'>
+        <t>
+          The client makes a request to the cross-origin authentication endpoint
+          by sending the following parameters using the <spanx style='verb'>application/json</spanx>
+          format with a character encoding of UTF-8 in the HTTP request entity-body:
+        </t>
+        <t>
+          <list style='hanging' hangIndent='6'>
+            <t hangText='credential_type'>
+              <vspace />
+              REQUIRED. The type of credential used for authentication.  Value
+              is case insensitive.
+            </t>
+          </list>
+        </t>
+        <t>
+          The request MUST include additional parameters that are interpreted
+          according to a credential type definition.
+        </t>
+      </section>
+    </section>
+    
   </middle>
   <back>
     <references title="Normative References">
