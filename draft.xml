@@ -17,22 +17,53 @@
     </author>
     <date/>
     <abstract>
-      <t>OpenID Connect 1.0 is a simple identity layer on top of the OAuth 2.0
+      <t>
+        OpenID Connect 1.0 is a simple identity layer on top of the OAuth 2.0
         protocol. It enables Clients to verify the identity of the End-User
         based on the authentication performed by an Authorization Server, as
         well as to obtain basic profile information about the End-User in an
-        interoperable and REST-like manner.</t>
+        interoperable and REST-like manner.
+      </t>
         
-      <t>This document describes a cross-origin authentication flow which allows
-        Clients to directly control the authentication ceremony, initiate a
-        session at the Authorization Server, and request authorization from the
-        Authorization Server after the authentication ceremony is complete.</t>
+      <t>
+        This specification describes a cross-origin authentication flow which
+        allows Clients to directly control the authentication ceremony, initiate
+        a session at the Authorization Server, and request authorization from
+        the Authorization Server after the authentication ceremony is complete.
+      </t>
     </abstract>
   </front>
   <middle>
     
     <section title="Introduction">
+      <t>
+        OpenID Connect 1.0 is a simple identity layer on top of the OAuth 2.0
+        protocol. It enables Clients to verify the identity of the End-User
+        based on the authentication performed by an Authorization Server, as
+        well as to obtain basic profile information about the End-User in an
+        interoperable and REST-like manner.
+      </t>
+        
+      <t>
+        This specification describes a cross-origin authentication flow which
+        allows Clients to directly control the authentication ceremony, initiate
+        a session at the Authorization Server, and request authorization from
+        the Authorization Server after the authentication ceremony is complete.
+      </t>
+      
+      <section title="Notational Conventions">
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+          "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+          "OPTIONAL" in this document are to be interpreted as described in <xref target="RFC2119"/>.</t>
+      </section>
+      
+      <section title="Terminology">
+        <t>
+          This specification also defines the following terms:
+        </t>
+      </section>
     </section>
+    
   </middle>
   <back>
     <references title="Normative References">

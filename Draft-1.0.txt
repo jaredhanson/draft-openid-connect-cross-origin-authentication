@@ -4,7 +4,7 @@
 
 Network Working Group                                          J. Hanson
 Internet-Draft                                                Auth0 Inc.
-Expires: September 29, 2017                               March 28, 2017
+Expires: September 30, 2017                               March 29, 2017
 
 
                OpenID Connect Cross-Origin Authentication
@@ -18,7 +18,7 @@ Abstract
    well as to obtain basic profile information about the End-User in an
    interoperable and REST-like manner.
 
-   This document describes a cross-origin authentication flow which
+   This specification describes a cross-origin authentication flow which
    allows Clients to directly control the authentication ceremony,
    initiate a session at the Authorization Server, and request
    authorization from the Authorization Server after the authentication
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on September 29, 2017.
+   This Internet-Draft will expire on September 30, 2017.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Hanson                 Expires September 29, 2017               [Page 1]
+Hanson                 Expires September 30, 2017               [Page 1]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
@@ -65,6 +65,29 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    described in the Simplified BSD License.
 
 1.  Introduction
+
+   OpenID Connect 1.0 is a simple identity layer on top of the OAuth 2.0
+   protocol.  It enables Clients to verify the identity of the End-User
+   based on the authentication performed by an Authorization Server, as
+   well as to obtain basic profile information about the End-User in an
+   interoperable and REST-like manner.
+
+   This specification describes a cross-origin authentication flow which
+   allows Clients to directly control the authentication ceremony,
+   initiate a session at the Authorization Server, and request
+   authorization from the Authorization Server after the authentication
+   ceremony is complete.
+
+1.1.  Notational Conventions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   [RFC2119].
+
+1.2.  Terminology
+
+   This specification also defines the following terms:
 
 2.  Normative References
 
@@ -81,6 +104,15 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
               RFC 6749, DOI 10.17487/RFC6749, October 2012,
               <http://www.rfc-editor.org/info/rfc6749>.
+
+
+
+
+
+Hanson                 Expires September 30, 2017               [Page 2]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+
 
    [I-D.ietf-oauth-discovery]
               Jones, M., Sakimura, N., and J. Bradley, "OAuth 2.0
@@ -109,4 +141,28 @@ Author's Address
 
 
 
-Hanson                 Expires September 29, 2017               [Page 2]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hanson                 Expires September 30, 2017               [Page 3]
