@@ -119,6 +119,55 @@
           The request MUST include additional parameters that are interpreted
           according to a credential type definition.
         </t>
+        
+        <figure>
+          <preamble>
+            The following is a non-normative JavaScript code sample that would
+            cause the User-Agent to make an Authentication Request to the
+            cross-origin authentication endpoint:
+          </preamble>
+          <artwork><![CDATA[
+var req = new XMLHttpRequest();
+req.addEventListener('load', function() {
+  var data = JSON.parse(this.responseText);
+  // handle response
+});
+
+req.withCredentials = true;
+req.open('POST', "https://server.example.com/co/authenticate");
+req.setRequestHeader('Content-Type', 'application/json');
+var data = {
+  credential_type: 'password',
+  username: document.getElementById('username').value,
+  password: document.getElementById('password').value
+}
+data = JSON.stringify(data);
+req.send(data);
+]]></artwork>
+        </figure>
+        
+        <figure>
+          <preamble>
+            The following is a non-normative example request that would be
+            sent by the Client to the Authorization Server:
+          </preamble>
+          <artwork><![CDATA[
+POST /co/authenticate HTTP/1.1
+Host: server.example.com
+Origin: https://www.example.net
+Content-Type: application/json
+Cookie: 'sid=xxxxxxxx'
+
+{ credential_type: 'password', username: 'jane', password: 's3cr1t' }
+]]></artwork>
+        </figure>
+        
+      </section>
+      
+      <section title='Authentication Response'>
+        <t>
+          TODO:
+        </t>
       </section>
     </section>
     
