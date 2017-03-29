@@ -51,6 +51,18 @@
         the Authorization Server after the authentication ceremony is complete.
       </t>
       
+      <t>
+        This flow is optimized for clients implemented in a browser using a
+        scripting language such as JavaScript.  It makes use of XMLHttpRequest
+        to allow Clients to authenticate users without HTTP redirection.
+      </t>
+      
+      <t>
+        This specifications does not change the semantics of the OpenID Connect
+        authentication flows.  It introduces a new endpoint to which the
+        authentication request is sent and processed.
+      </t>
+      
       <section title="Notational Conventions">
         <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
           "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -62,6 +74,12 @@
           This specification also defines the following terms:
         </t>
       </section>
+    </section>
+    
+    <section title="Overview">
+      <t>
+        TODO.
+      </t>
     </section>
     
   </middle>
