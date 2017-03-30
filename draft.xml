@@ -113,6 +113,11 @@
               REQUIRED. The type of credential used for authentication.  Value
               is case insensitive.
             </t>
+            
+            <t hangText='client_id'>
+              <vspace />
+              REQUIRED. The client identifier.
+            </t>
           </list>
         </t>
         <t>
@@ -136,6 +141,7 @@ req.addEventListener('load', function() {
 req.open('POST', 'https://server.example.com/co/authenticate');
 req.setRequestHeader('Content-Type', 'application/json');
 var data = {
+  client_id: 's6BhdRkqt3',
   credential_type: 'password',
   username: document.getElementById('username').value,
   password: document.getElementById('password').value
@@ -156,7 +162,8 @@ Host: server.example.com
 Origin: https://www.example.net
 Content-Type: application/json
 
-{ credential_type: 'password', username: 'jane', password: 's3cr1t' }
+{ "client_id": "s6BhdRkqt3", "credential_type": "password",
+  "username": "jane", "password": "s3cr1t" }
 ]]></artwork>
         </figure>
         
@@ -310,6 +317,65 @@ Content-Type: application/json
         that any tokens issued are delivered to the intedended client via a
         redirect endpoint or HTML5 web messaging.
       </t>
+      
+      <section title='Authorization Request'>
+        <t>
+          The client makes a request to the Authorization Endpoint in the manner
+          specified by OpenID Connect.  If session initiation is requested, the
+          ID Token from the Authentication Request is included as the value of
+          the <spanx style='verb'>id_token_hint</spanx> parameter.
+        </t>
+        <figure>
+          <preamble>
+            The following is a non-normative example request that would be
+            sent by the Client to the Authorization Server:
+          </preamble>
+          <artwork><![CDATA[
+GET /authorize?
+  response_type=token
+  &id_token_hint=ey...
+  &scope=openid%20profile%20email
+  &client_id=s6BhdRkqt3
+  &state=af0ifjsldkj
+  &redirect_uri=https%3A%2F%2Fclient.example.org%2Fcb HTTP/1.1
+Host: server.example.com
+]]></artwork>
+        </figure>
+      </section>
+      
+      <section title='Session Initiation Validation'>
+        <t>
+          If, as a result of processing the authorization request, the OpenID
+          Provider initiates a session, it MUST validate the id_token in the
+          request received as follows:
+        </t>
+        <t>
+          <list style='numbers'>
+            <t>
+              Verify the signature and/or encryption applied to the ID Token.
+            </t>
+            <t>
+              The Issuer Identifier for the OpenID Provider MUST exactly match
+              the value of the iss (issuer) claim.
+            </t>
+            <t>
+              The OpenID Provider MUST validate that the aud (audience) claim
+              contains its Issuer Identifier.
+            </t>
+            <t>
+              The OpenID Provider MUST validate that the azp (authorized party)
+              claim is present and that it matches the client_id value in the
+              authorization request.
+            </t>
+            <t>
+              The OpenID Provider MUST validate that the rfp (request forgery
+              protection) claim is present and contains a verifiable identifier
+              for the browser session, that cannot be guessed by a third party,
+              including the Client.
+            </t>
+          </list>
+        </t>
+      </section>
     </section>
     
   </middle>

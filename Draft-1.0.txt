@@ -140,8 +140,35 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
          REQUIRED.  The type of credential used for authentication.
          Value is case insensitive.
 
+   client_id
+         REQUIRED.  The client identifier.
+
    The request MUST include additional parameters that are interpreted
    according to a credential type definition.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hanson                   Expires October 1, 2017                [Page 3]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+
 
    The following is a non-normative JavaScript code sample that would
    cause the User-Agent to make an Authentication Request to the cross-
@@ -156,19 +183,13 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    req.open('POST', 'https://server.example.com/co/authenticate');
    req.setRequestHeader('Content-Type', 'application/json');
    var data = {
+     client_id: 's6BhdRkqt3',
      credential_type: 'password',
      username: document.getElementById('username').value,
      password: document.getElementById('password').value
    }
    data = JSON.stringify(data);
    req.send(data);
-
-
-
-Hanson                   Expires October 1, 2017                [Page 3]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
-
 
    The following is a non-normative example request that would be sent
    by the Client to the Authorization Server:
@@ -178,7 +199,8 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    Origin: https://www.example.net
    Content-Type: application/json
 
-   { credential_type: 'password', username: 'jane', password: 's3cr1t' }
+   { "client_id": "s6BhdRkqt3", "credential_type": "password",
+     "username": "jane", "password": "s3cr1t" }
 
    The OpenID Provider MUST:
 
@@ -196,6 +218,14 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    to the entity-body of the HTTP response with a 200 (OK) status code:
 
    id_token
+
+
+
+Hanson                   Expires October 1, 2017                [Page 4]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+
+
          REQUIRED.  The ID Token containing claims about the
          authenticated End-User.
 
@@ -218,13 +248,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    o  MAY encrypt the ID Token so that it does not reveal any claims to
       the Client.  A token encrypted in this manner MAY be used by the
       client for session initiation,
-
-
-
-Hanson                   Expires October 1, 2017                [Page 4]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
-
 
    o  MUST NOT issue an access token or other credential that would
       permit access to additional information beyond identity claims.
@@ -252,6 +275,13 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
                The credentials are invalid or the OpenID Provider denied
                the request.
 
+
+
+Hanson                   Expires October 1, 2017                [Page 5]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+
+
          unsupported_credential_type
                The OpenID Provider does not support issuing an ID Token
                using this method.
@@ -270,6 +300,32 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
          information about the error, used to provide the client
          developer with additional information about the error.
 
+4.  Session Initiation and Authorization
+
+   Having authenticated an End-User, it is often desirable to establish
+   a session and obtain authorization.  Session establishment enables
+   single sign-on, so the End-User doesn't need to authenticate to the
+   OpenID Provider each time they use a new app (unless required by
+   authorization server policy).  Authorization allows the Client to
+   obtain additional access to the End-User's identity information and
+   protected resources.
+
+   In order to ensure that the session is established in the same User-
+   Agent from which the Authentication Request was sent, session
+   establishment makes use of the Authorization Endpoint, using HTTP
+   redirection, as defined by OAuth 2.0 and extended by OpenID Connect.
+
+   Similarly, use of HTTP redirection allows the Client's identity to be
+   verified, and consent to be obtained for authorization.  It also
+   ensures that any tokens issued are delivered to the intedended client
+   via a redirect endpoint or HTML5 web messaging.
+
+4.1.  Authorization Request
+
+   The client makes a request to the Authorization Endpoint in the
+   manner specified by OpenID Connect.  If session initiation is
+   requested, the ID Token from the Authentication Request is included
+   as the value of the "id_token_hint" parameter.
 
 
 
@@ -277,12 +333,47 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
 
 
-Hanson                   Expires October 1, 2017                [Page 5]
+Hanson                   Expires October 1, 2017                [Page 6]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
 
-4.  Normative References
+   The following is a non-normative example request that would be sent
+   by the Client to the Authorization Server:
+
+   GET /authorize?
+     response_type=token
+     &id_token_hint=ey...
+     &scope=openid%20profile%20email
+     &client_id=s6BhdRkqt3
+     &state=af0ifjsldkj
+     &redirect_uri=https%3A%2F%2Fclient.example.org%2Fcb HTTP/1.1
+   Host: server.example.com
+
+4.2.  Session Initiation Validation
+
+   If, as a result of processing the authorization request, the OpenID
+   Provider initiates a session, it MUST validate the id_token in the
+   request received as follows:
+
+   1.  Verify the signature and/or encryption applied to the ID Token.
+
+   2.  The Issuer Identifier for the OpenID Provider MUST exactly match
+       the value of the iss (issuer) claim.
+
+   3.  The OpenID Provider MUST validate that the aud (audience) claim
+       contains its Issuer Identifier.
+
+   4.  The OpenID Provider MUST validate that the azp (authorized party)
+       claim is present and that it matches the client_id value in the
+       authorization request.
+
+   5.  The OpenID Provider MUST validate that the rfp (request forgery
+       protection) claim is present and contains a verifiable identifier
+       for the browser session, that cannot be guessed by a third party,
+       including the Client.
+
+5.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -293,6 +384,15 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
               JavaScript Object Notation (JSON)", RFC 4627,
               DOI 10.17487/RFC4627, July 2006,
               <http://www.rfc-editor.org/info/rfc4627>.
+
+
+
+
+
+Hanson                   Expires October 1, 2017                [Page 7]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+
 
    [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
               RFC 6749, DOI 10.17487/RFC6749, October 2012,
@@ -333,4 +433,16 @@ Author's Address
 
 
 
-Hanson                   Expires October 1, 2017                [Page 6]
+
+
+
+
+
+
+
+
+
+
+
+
+Hanson                   Expires October 1, 2017                [Page 8]
