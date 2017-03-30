@@ -100,11 +100,11 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
 2.  Overview
 
-   TODO.
-
-
-
-
+   OpenID Connect, in building upon OAuth 2.0, allows a service to
+   delegate authentication responsibilities to a separate authorization
+   server.  In many deployment scenarios, enabling single sign-on is a
+   motivating factor for implementing OpenID Connect, as it allows a
+   user to access multiple services without re-authentication.
 
 
 
@@ -113,6 +113,30 @@ Hanson                   Expires October 1, 2017                [Page 2]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
+
+   In some instances a service may have multiple domains that act as
+   primary points of interaction with the user.  For example, a bank may
+   operate bank.example, which provides consumer financial services, as
+   well as bankadvisors.example, which provides tailored investment
+   banking services.  The website on each domain presents the user with
+   a traditional login dialog, with username and password fields.
+   Because the bank maintains a single user directory, a single set of
+   user credentials works on both domains.
+
+   In order to offer additional services to its customers, the bank has
+   decided to offer open APIs, and as part of that effort is
+   implementing an authorization server to allow single-sign on and
+   authorization.  The authorization server is located at
+   accounts.bank.example.
+
+   Typically, as part of such an effort, the website at
+   bankadvisors.example would replace its login dialog with a single
+   "sign-in" button that would redirect to accounts.bank.example.
+   However, in some circumstances, it may be desireable to continue to
+   accept credentials directly at bankadvisors.example.
+
+   The cross-origin authentication endpoint offers a solution that can
+   satisfy this scenario.
 
 3.  Cross-Origin Authentication Endpoint
 
@@ -137,30 +161,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    entity-body:
 
    credential_type
-         REQUIRED.  The type of credential used for authentication.
-         Value is case insensitive.
-
-   client_id
-         REQUIRED.  The client identifier.
-
-   The request MUST include additional parameters that are interpreted
-   according to a credential type definition.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -169,6 +169,15 @@ Hanson                   Expires October 1, 2017                [Page 3]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
+
+         REQUIRED.  The type of credential used for authentication.
+         Value is case insensitive.
+
+   client_id
+         REQUIRED.  The client identifier.
+
+   The request MUST include additional parameters that are interpreted
+   according to a credential type definition.
 
    The following is a non-normative JavaScript code sample that would
    cause the User-Agent to make an Authentication Request to the cross-
@@ -210,6 +219,13 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
       corresponds to the Client's origin previously established with the
       authorization server during the client registration process,
 
+
+
+Hanson                   Expires October 1, 2017                [Page 4]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+
+
    o  verify that the client is allowed to use the cross-origin
       authentication flow.
 
@@ -218,13 +234,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    If the authentication request is valid and authorized, the OpenID
    Provider constructs the response by adding the following parameters
    to the entity-body of the HTTP response with a 200 (OK) status code:
-
-
-
-Hanson                   Expires October 1, 2017                [Page 4]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
-
 
    id_token
          REQUIRED.  The ID Token containing claims about the
@@ -264,15 +273,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
          REQUIRED.  A single ASCII error code from the following:
 
          invalid_request
-               The request is missing a required parameter, includes an
-               unsupported parameter value (other than credential type),
-               repeats a parameter, or is otherwise malformed.
-
-         unauthorized_client
-               The client is not authorized to use cross-origin
-               authentication or the origin of the request is invalid.
-
-         access_denied
 
 
 
@@ -282,6 +282,15 @@ Hanson                   Expires October 1, 2017                [Page 5]
 Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
 
+               The request is missing a required parameter, includes an
+               unsupported parameter value (other than credential type),
+               repeats a parameter, or is otherwise malformed.
+
+         unauthorized_client
+               The client is not authorized to use cross-origin
+               authentication or the origin of the request is invalid.
+
+         access_denied
                The credentials are invalid or the OpenID Provider denied
                the request.
 
@@ -320,6 +329,15 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
    Similarly, use of HTTP redirection allows the Client's identity to be
    verified, and consent to be obtained for authorization.  It also
+
+
+
+
+Hanson                   Expires October 1, 2017                [Page 6]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+
+
    ensures that any tokens issued are delivered to the intedended client
    via a redirect endpoint or HTML5 web messaging.
 
@@ -329,14 +347,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    manner specified by OpenID Connect.  If session initiation is
    requested, the ID Token from the Authentication Request is included
    as the value of the "id_token_hint" parameter.
-
-
-
-
-Hanson                   Expires October 1, 2017                [Page 6]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
-
 
    The following is a non-normative example request that would be sent
    by the Client to the Authorization Server:
@@ -373,6 +383,17 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
        for the browser session, that cannot be guessed by a third party,
        including the Client.
 
+
+
+
+
+
+
+Hanson                   Expires October 1, 2017                [Page 7]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+
+
 5.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -384,15 +405,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
               JavaScript Object Notation (JSON)", RFC 4627,
               DOI 10.17487/RFC4627, July 2006,
               <http://www.rfc-editor.org/info/rfc4627>.
-
-
-
-
-
-Hanson                   Expires October 1, 2017                [Page 7]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
-
 
    [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
               RFC 6749, DOI 10.17487/RFC6749, October 2012,
@@ -410,18 +422,6 @@ Author's Address
 
    Email: jaredhanson@gmail.com
    URI:   http://www.jaredhanson.net/
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
