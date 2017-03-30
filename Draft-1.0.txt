@@ -229,6 +229,59 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    o  MUST NOT issue an access token or other credential that would
       permit access to additional information beyond identity claims.
 
+3.3.  Authentication Error Response
+
+   If the authentication request failed End-User authentication or is
+   invalid, the authorization server responds with an HTTP 400 (Bad
+   Request) status code (unless specified otherwise) and includes the
+   following parameters with the response:
+
+   error
+         REQUIRED.  A single ASCII error code from the following:
+
+         invalid_request
+               The request is missing a required parameter, includes an
+               unsupported parameter value (other than credential type),
+               repeats a parameter, or is otherwise malformed.
+
+         unauthorized_client
+               The client is not authorized to use cross-origin
+               authentication or the origin of the request is invalid.
+
+         access_denied
+               The credentials are invalid or the OpenID Provider denied
+               the request.
+
+         unsupported_credential_type
+               The OpenID Provider does not support issuing an ID Token
+               using this method.
+
+         server_error
+               The authorization server encountered an unexpected
+               condition that prevented it from fulfilling the request.
+
+   error_description
+         OPTIONAL.  A human-readable ASCII text providing additional
+         information, used to assist the client developer in
+         understanding the error that occurred.
+
+   error_uri
+         OPTIONAL.  A URI identifying a human-readable web page with
+         information about the error, used to provide the client
+         developer with additional information about the error.
+
+
+
+
+
+
+
+
+Hanson                   Expires October 1, 2017                [Page 5]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+
+
 4.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -277,4 +330,7 @@ Author's Address
 
 
 
-Hanson                   Expires October 1, 2017                [Page 5]
+
+
+
+Hanson                   Expires October 1, 2017                [Page 6]

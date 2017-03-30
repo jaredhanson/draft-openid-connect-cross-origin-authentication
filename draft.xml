@@ -228,6 +228,64 @@ Content-Type: application/json
           </list>
         </t>
       </section>
+      
+      <section title='Authentication Error Response' anchor="token-err-res">
+        <t>
+          If the authentication request failed End-User authentication or is
+          invalid, the authorization server responds with an HTTP 400 (Bad
+          Request) status code (unless specified otherwise) and includes the
+          following parameters with the response:
+        </t>
+        <t>
+          <list style='hanging' hangIndent='6'>
+            <t hangText='error'>
+              <vspace />
+              REQUIRED. A single ASCII error code from the following:
+              
+              <list style='hanging' hangIndent='6'>
+                <t hangText='invalid_request'>
+                  <vspace />
+                  The request is missing a required parameter, includes an
+                  unsupported parameter value (other than credential type),
+                  repeats a parameter, or is otherwise malformed.
+                </t>
+                <t hangText='unauthorized_client'>
+                  <vspace />
+                  The client is not authorized to use cross-origin
+                  authentication or the origin of the request is invalid.
+                </t>
+                <t hangText='access_denied'>
+                  <vspace />
+                  The credentials are invalid or the OpenID Provider denied the
+                  request.
+                </t>
+                <t hangText='unsupported_credential_type'>
+                  <vspace />
+                  The OpenID Provider does not support issuing an ID Token using
+                  this method.
+                </t>
+                <t hangText='server_error'>
+                  <vspace />
+                  The authorization server encountered an unexpected condition
+                  that prevented it from fulfilling the request.
+                </t>
+              </list>
+            </t>
+            <t hangText='error_description'>
+              <vspace />
+              OPTIONAL. A human-readable ASCII text providing additional
+              information, used to assist the client developer in
+              understanding the error that occurred.
+            </t>
+            <t hangText='error_uri'>
+              <vspace />
+              OPTIONAL. A URI identifying a human-readable web page with
+              information about the error, used to provide the client
+              developer with additional information about the error.
+            </t>
+          </list>
+        </t>
+      </section>
     </section>
     
   </middle>
