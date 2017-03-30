@@ -153,7 +153,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
      // handle response
    });
 
-   req.open('POST', "https://server.example.com/co/authenticate");
+   req.open('POST', 'https://server.example.com/co/authenticate');
    req.setRequestHeader('Content-Type', 'application/json');
    var data = {
      credential_type: 'password',
@@ -207,8 +207,8 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    username or email address.  Furthermore, because authentication is
    performed directly between the Client and OP, without using HTTP
    redirection, it is not possible to prompt the user for consent to
-   share identity information or access to protected resources or verify
-   the Client's identity and location to which tokens will be issued.
+   share protected information or verify the Client's identity and
+   location to which tokens will be issued.
 
    Due to these limitations the OpenID Provider:
 
@@ -227,7 +227,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
 
    o  MUST NOT issue an access token or other credential that would
-      permit access to additional resource beyond identity claims.
+      permit access to additional information beyond identity claims.
 
 4.  Normative References
 
