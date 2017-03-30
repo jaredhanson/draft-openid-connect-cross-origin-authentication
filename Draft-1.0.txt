@@ -181,6 +181,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    });
 
    req.open('POST', 'https://server.example.com/co/authenticate');
+   req.withCredentials = true;
    req.setRequestHeader('Content-Type', 'application/json');
    var data = {
      client_id: 's6BhdRkqt3',
@@ -198,6 +199,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    Host: server.example.com
    Origin: https://www.example.net
    Content-Type: application/json
+   Cookie: sid=xxxxxxxx
 
    { "client_id": "s6BhdRkqt3", "credential_type": "password",
      "username": "jane", "password": "s3cr1t" }
@@ -217,8 +219,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    Provider constructs the response by adding the following parameters
    to the entity-body of the HTTP response with a 200 (OK) status code:
 
-   id_token
-
 
 
 Hanson                   Expires October 1, 2017                [Page 4]
@@ -226,6 +226,7 @@ Hanson                   Expires October 1, 2017                [Page 4]
 Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
 
+   id_token
          REQUIRED.  The ID Token containing claims about the
          authenticated End-User.
 
@@ -272,8 +273,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
                authentication or the origin of the request is invalid.
 
          access_denied
-               The credentials are invalid or the OpenID Provider denied
-               the request.
+
 
 
 
@@ -281,6 +281,9 @@ Hanson                   Expires October 1, 2017                [Page 5]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
+
+               The credentials are invalid or the OpenID Provider denied
+               the request.
 
          unsupported_credential_type
                The OpenID Provider does not support issuing an ID Token
@@ -326,9 +329,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    manner specified by OpenID Connect.  If session initiation is
    requested, the ID Token from the Authentication Request is included
    as the value of the "id_token_hint" parameter.
-
-
-
 
 
 

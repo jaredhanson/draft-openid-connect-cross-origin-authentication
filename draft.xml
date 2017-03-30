@@ -139,6 +139,7 @@ req.addEventListener('load', function() {
 });
 
 req.open('POST', 'https://server.example.com/co/authenticate');
+req.withCredentials = true;
 req.setRequestHeader('Content-Type', 'application/json');
 var data = {
   client_id: 's6BhdRkqt3',
@@ -161,6 +162,7 @@ POST /co/authenticate HTTP/1.1
 Host: server.example.com
 Origin: https://www.example.net
 Content-Type: application/json
+Cookie: sid=xxxxxxxx
 
 { "client_id": "s6BhdRkqt3", "credential_type": "password",
   "username": "jane", "password": "s3cr1t" }
