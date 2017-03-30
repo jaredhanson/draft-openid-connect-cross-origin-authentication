@@ -288,6 +288,30 @@ Content-Type: application/json
       </section>
     </section>
     
+    <section title="Session Initiation and Authorization">
+      <t>
+        Having authenticated an End-User, it is often desirable to establish a
+        session and obtain authorization.  Session establishment enables single
+        sign-on, so the End-User doesn't need to authenticate to the OpenID
+        Provider each time they use a new app (unless required by authorization
+        server policy).  Authorization allows the Client to obtain additional
+        access to the End-User's identity information and protected resources.
+      </t>
+      <t>
+        In order to ensure that the session is established in the same
+        User-Agent from which the Authentication Request was sent, session
+        establishment makes use of the Authorization Endpoint, using
+        HTTP redirection, as defined by OAuth 2.0 and extended by OpenID
+        Connect.
+      </t>
+      <t>
+        Similarly, use of HTTP redirection allows the Client's identity to be
+        verified, and consent to be obtained for authorization.  It also ensures
+        that any tokens issued are delivered to the intedended client via a
+        redirect endpoint or HTML5 web messaging.
+      </t>
+    </section>
+    
   </middle>
   <back>
     <references title="Normative References">
