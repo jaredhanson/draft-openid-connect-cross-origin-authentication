@@ -92,7 +92,7 @@
       <t>
         Use of the cross-origin authentication endpoint requires direct Client
         access to the End-User's credentials.  The credentials should only used
-        when their is a high degree of trust between the End-User and the
+        when there is a high degree of trust between the End-User and the
         Client.
       </t>
       <t>
@@ -133,7 +133,6 @@ req.addEventListener('load', function() {
   // handle response
 });
 
-req.withCredentials = true;
 req.open('POST', "https://server.example.com/co/authenticate");
 req.setRequestHeader('Content-Type', 'application/json');
 var data = {
@@ -156,17 +155,77 @@ POST /co/authenticate HTTP/1.1
 Host: server.example.com
 Origin: https://www.example.net
 Content-Type: application/json
-Cookie: 'sid=xxxxxxxx'
 
 { credential_type: 'password', username: 'jane', password: 's3cr1t' }
 ]]></artwork>
         </figure>
         
+        <t>
+          The OpenID Provider MUST:
+        </t>
+        <t>
+          <list style='symbols'>
+            <t>
+              ensure that the Origin header is present and that its value
+              corresponds to the Client's origin previously established with the
+              authorization server during the client registration process,
+            </t>
+            <t>
+              verify that the client is allowed to use the cross-origin
+              authentication flow.
+            </t>
+          </list>
+        </t>
       </section>
       
       <section title='Authentication Response'>
         <t>
-          TODO:
+          If the authentication request is valid and authorized, the OpenID
+          Provider constructs the response by adding the following parameters to
+          the entity-body of the HTTP response with a 200 (OK) status code:
+        </t>
+        <t>
+          <list style='hanging' hangIndent='6'>
+            <t hangText='id_token'>
+              <vspace />
+              REQUIRED. The ID Token containing claims about the authenticated
+              End-User.
+            </t>
+          </list>
+        </t>
+        <t>
+          The parameters are included in the entity body of the HTTP response
+          using the <spanx style='verb'>application/json</spanx> media type as
+          defined by <xref target='RFC4627'/>.
+        </t>
+        <t>
+          In the case of a cross-origin authentication request, the RP may
+          already posess identity information about the user, such as a username
+          or email address.  Furthermore, because authentication is performed
+          directly between the Client and OP, without using HTTP redirection, it
+          is not possible to prompt the user for consent to share identity
+          information or access to protected resources or verify the Client's
+          identity and location to which tokens will be issued.
+        </t>
+        <t>
+          Due to these limitations the OpenID Provider:
+        </t>
+        <t>
+          <list style='symbols'>
+            <t>
+              SHOULD NOT add claims to the ID Token that were not otherwise
+              revealed to the Client during the authentication request,
+            </t>
+            <t>
+              MAY encrypt the ID Token so that it does not reveal any claims
+              to the Client.  A token encrypted in this manner MAY be used by
+              the client for session initiation,
+            </t>
+            <t>
+              MUST NOT issue an access token or other credential that would
+              permit access to additional resource beyond identity claims.
+            </t>
+          </list>
         </t>
       </section>
     </section>

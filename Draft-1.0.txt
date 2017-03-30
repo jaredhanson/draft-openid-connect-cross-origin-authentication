@@ -4,7 +4,7 @@
 
 Network Working Group                                          J. Hanson
 Internet-Draft                                                Auth0 Inc.
-Expires: September 30, 2017                               March 29, 2017
+Expires: October 1, 2017                                  March 30, 2017
 
 
                OpenID Connect Cross-Origin Authentication
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on September 30, 2017.
+   This Internet-Draft will expire on October 1, 2017.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Hanson                 Expires September 30, 2017               [Page 1]
+Hanson                   Expires October 1, 2017                [Page 1]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
@@ -109,7 +109,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
 
 
-Hanson                 Expires September 30, 2017               [Page 2]
+Hanson                   Expires October 1, 2017                [Page 2]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
@@ -123,7 +123,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
    Use of the cross-origin authentication endpoint requires direct
    Client access to the End-User's credentials.  The credentials should
-   only used when their is a high degree of trust between the End-User
+   only used when there is a high degree of trust between the End-User
    and the Client.
 
    Communication with the cross-origin authentication endpoint MUST
@@ -143,33 +143,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    The request MUST include additional parameters that are interpreted
    according to a credential type definition.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Hanson                 Expires September 30, 2017               [Page 3]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
-
-
    The following is a non-normative JavaScript code sample that would
    cause the User-Agent to make an Authentication Request to the cross-
    origin authentication endpoint:
@@ -180,7 +153,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
      // handle response
    });
 
-   req.withCredentials = true;
    req.open('POST', "https://server.example.com/co/authenticate");
    req.setRequestHeader('Content-Type', 'application/json');
    var data = {
@@ -191,6 +163,13 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    data = JSON.stringify(data);
    req.send(data);
 
+
+
+Hanson                   Expires October 1, 2017                [Page 3]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+
+
    The following is a non-normative example request that would be sent
    by the Client to the Authorization Server:
 
@@ -198,13 +177,57 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    Host: server.example.com
    Origin: https://www.example.net
    Content-Type: application/json
-   Cookie: 'sid=xxxxxxxx'
 
    { credential_type: 'password', username: 'jane', password: 's3cr1t' }
 
+   The OpenID Provider MUST:
+
+   o  ensure that the Origin header is present and that its value
+      corresponds to the Client's origin previously established with the
+      authorization server during the client registration process,
+
+   o  verify that the client is allowed to use the cross-origin
+      authentication flow.
+
 3.2.  Authentication Response
 
-   TODO:
+   If the authentication request is valid and authorized, the OpenID
+   Provider constructs the response by adding the following parameters
+   to the entity-body of the HTTP response with a 200 (OK) status code:
+
+   id_token
+         REQUIRED.  The ID Token containing claims about the
+         authenticated End-User.
+
+   The parameters are included in the entity body of the HTTP response
+   using the "application/json" media type as defined by [RFC4627].
+
+   In the case of a cross-origin authentication request, the RP may
+   already posess identity information about the user, such as a
+   username or email address.  Furthermore, because authentication is
+   performed directly between the Client and OP, without using HTTP
+   redirection, it is not possible to prompt the user for consent to
+   share identity information or access to protected resources or verify
+   the Client's identity and location to which tokens will be issued.
+
+   Due to these limitations the OpenID Provider:
+
+   o  SHOULD NOT add claims to the ID Token that were not otherwise
+      revealed to the Client during the authentication request,
+
+   o  MAY encrypt the ID Token so that it does not reveal any claims to
+      the Client.  A token encrypted in this manner MAY be used by the
+      client for session initiation,
+
+
+
+Hanson                   Expires October 1, 2017                [Page 4]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+
+
+   o  MUST NOT issue an access token or other credential that would
+      permit access to additional resource beyond identity claims.
 
 4.  Normative References
 
@@ -217,14 +240,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
               JavaScript Object Notation (JSON)", RFC 4627,
               DOI 10.17487/RFC4627, July 2006,
               <http://www.rfc-editor.org/info/rfc4627>.
-
-
-
-
-Hanson                 Expires September 30, 2017               [Page 4]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
-
 
    [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
               RFC 6749, DOI 10.17487/RFC6749, October 2012,
@@ -262,19 +277,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Hanson                 Expires September 30, 2017               [Page 5]
+Hanson                   Expires October 1, 2017                [Page 5]
