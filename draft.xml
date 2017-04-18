@@ -79,34 +79,28 @@
     <section title="Overview">
       <t>
         OpenID Connect, in building upon OAuth 2.0, allows a service to delegate
-        authentication responsibilities to a separate authorization server.  In
-        many deployment scenarios, enabling single sign-on is a motivating
+        authentication responsibilities to a centralized authorization server.
+        In many deployment scenarios, enabling single sign-on is a motivating
         factor for implementing OpenID Connect, as it allows a user to access
         multiple services without re-authentication.
       </t>
       <t>
         In some instances a service may have multiple domains that act as
-        primary points of interaction with the user.  For example, a bank may
-        operate bank.example, which provides consumer financial services, as
-        well as bankadvisors.example, which provides tailored investment banking
-        services.  The website on each domain presents the user with a
-        traditional login dialog, with username and password fields.  Because
-        the bank maintains a single user directory, a single set of user
-        credentials works on both domains.
+        primary points of interaction with the user.  For example, an online
+        retailer may operate category-focused sites at www.phoneshop.example
+        and www.camerashop.example.  The pages on each domain present the user
+        with a traditional login dialog, prompting for a username and password.
+        Because the retailer maintains a single user directory, a single set of
+        user credentials works on both domains.
       </t>
       <t>
-        In order to offer additional services to its customers, the bank
-        has decided to offer open APIs, and as part of that effort is
-        implementing an authorization server to allow single-sign on and
-        authorization.  The authorization server is located at
-        accounts.bank.example.
-      </t>
-      <t>
-        Typically, as part of such an effort, the website at bankadvisors.example
-        would replace its login dialog with a single "sign-in" button that would
-        redirect to accounts.bank.example.  However, in some circumstances, it
-        may be desireable to continue to accept credentials directly at
-        bankadvisors.example.
+        In order to improve the shopping experience, the retailer has decided
+        to allow single-sign on by operating an OpenID Provider at
+        login.shop.example.  As part of that deployment, the retailer should
+        consider replacing the login dialog on each site with a single "sign-in"
+        button that redirects to login.shop.example and presents a unifed login
+        experience.  In some circumstances, however, it may be desireable to
+        continue to accept credentials directly on each separate domain.
       </t>
       <t>
         The cross-origin authentication endpoint offers a solution that can

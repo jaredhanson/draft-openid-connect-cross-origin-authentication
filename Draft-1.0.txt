@@ -4,7 +4,7 @@
 
 Network Working Group                                          J. Hanson
 Internet-Draft                                                Auth0 Inc.
-Expires: October 1, 2017                                  March 30, 2017
+Expires: October 20, 2017                                 April 18, 2017
 
 
                OpenID Connect Cross-Origin Authentication
@@ -39,7 +39,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on October 1, 2017.
+   This Internet-Draft will expire on October 20, 2017.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Hanson                   Expires October 1, 2017                [Page 1]
+Hanson                  Expires October 20, 2017                [Page 1]
 
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
 
    carefully, as they describe your rights and restrictions with respect
@@ -101,39 +101,35 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 2.  Overview
 
    OpenID Connect, in building upon OAuth 2.0, allows a service to
-   delegate authentication responsibilities to a separate authorization
-   server.  In many deployment scenarios, enabling single sign-on is a
-   motivating factor for implementing OpenID Connect, as it allows a
-   user to access multiple services without re-authentication.
+   delegate authentication responsibilities to a centralized
+   authorization server.  In many deployment scenarios, enabling single
+   sign-on is a motivating factor for implementing OpenID Connect, as it
+   allows a user to access multiple services without re-authentication.
 
 
 
 
-Hanson                   Expires October 1, 2017                [Page 2]
+Hanson                  Expires October 20, 2017                [Page 2]
 
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
+Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
 
    In some instances a service may have multiple domains that act as
-   primary points of interaction with the user.  For example, a bank may
-   operate bank.example, which provides consumer financial services, as
-   well as bankadvisors.example, which provides tailored investment
-   banking services.  The website on each domain presents the user with
-   a traditional login dialog, with username and password fields.
-   Because the bank maintains a single user directory, a single set of
-   user credentials works on both domains.
+   primary points of interaction with the user.  For example, an online
+   retailer may operate category-focused sites at www.phoneshop.example
+   and www.camerashop.example.  The pages on each domain present the
+   user with a traditional login dialog, prompting for a username and
+   password.  Because the retailer maintains a single user directory, a
+   single set of user credentials works on both domains.
 
-   In order to offer additional services to its customers, the bank has
-   decided to offer open APIs, and as part of that effort is
-   implementing an authorization server to allow single-sign on and
-   authorization.  The authorization server is located at
-   accounts.bank.example.
-
-   Typically, as part of such an effort, the website at
-   bankadvisors.example would replace its login dialog with a single
-   "sign-in" button that would redirect to accounts.bank.example.
-   However, in some circumstances, it may be desireable to continue to
-   accept credentials directly at bankadvisors.example.
+   In order to improve the shopping experience, the retailer has decided
+   to allow single-sign on by operating an OpenID Provider at
+   login.shop.example.  As part of that deployment, the retailer should
+   consider replacing the login dialog on each site with a single "sign-
+   in" button that redirects to login.shop.example and presents a unifed
+   login experience.  In some circumstances, however, it may be
+   desireable to continue to accept credentials directly on each
+   separate domain.
 
    The cross-origin authentication endpoint offers a solution that can
    satisfy this scenario.
@@ -161,20 +157,18 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
    entity-body:
 
    credential_type
-
-
-
-
-Hanson                   Expires October 1, 2017                [Page 3]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
-
-
          REQUIRED.  The type of credential used for authentication.
          Value is case insensitive.
 
    client_id
          REQUIRED.  The client identifier.
+
+
+
+Hanson                  Expires October 20, 2017                [Page 3]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
+
 
    The request MUST include additional parameters that are interpreted
    according to a credential type definition.
@@ -219,15 +213,18 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
       corresponds to the Client's origin previously established with the
       authorization server during the client registration process,
 
-
-
-Hanson                   Expires October 1, 2017                [Page 4]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
-
-
    o  verify that the client is allowed to use the cross-origin
       authentication flow.
+
+
+
+
+
+
+Hanson                  Expires October 20, 2017                [Page 4]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
+
 
 3.2.  Authentication Response
 
@@ -273,18 +270,17 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
          REQUIRED.  A single ASCII error code from the following:
 
          invalid_request
-
-
-
-
-Hanson                   Expires October 1, 2017                [Page 5]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
-
-
                The request is missing a required parameter, includes an
                unsupported parameter value (other than credential type),
                repeats a parameter, or is otherwise malformed.
+
+
+
+
+Hanson                  Expires October 20, 2017                [Page 5]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
+
 
          unauthorized_client
                The client is not authorized to use cross-origin
@@ -329,17 +325,18 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
 
    Similarly, use of HTTP redirection allows the Client's identity to be
    verified, and consent to be obtained for authorization.  It also
-
-
-
-
-Hanson                   Expires October 1, 2017                [Page 6]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
-
-
    ensures that any tokens issued are delivered to the intedended client
    via a redirect endpoint or HTML5 web messaging.
+
+
+
+
+
+
+Hanson                  Expires October 20, 2017                [Page 6]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
+
 
 4.1.  Authorization Request
 
@@ -383,23 +380,19 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
        for the browser session, that cannot be guessed by a third party,
        including the Client.
 
-
-
-
-
-
-
-Hanson                   Expires October 1, 2017                [Page 7]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     March 2017
-
-
 5.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <http://www.rfc-editor.org/info/rfc2119>.
+
+
+
+Hanson                  Expires October 20, 2017                [Page 7]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
+
 
    [RFC4627]  Crockford, D., "The application/json Media Type for
               JavaScript Object Notation (JSON)", RFC 4627,
@@ -445,4 +438,11 @@ Author's Address
 
 
 
-Hanson                   Expires October 1, 2017                [Page 8]
+
+
+
+
+
+
+
+Hanson                  Expires October 20, 2017                [Page 8]
