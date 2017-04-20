@@ -58,7 +58,7 @@
       </t>
       
       <t>
-        This specifications does not change the semantics of the OpenID Connect
+        This specification does not change the semantics of the OpenID Connect
         authentication flows.  It introduces a new endpoint to which the
         authentication request is sent and processed.
       </t>
@@ -98,7 +98,7 @@
         to allow single-sign on by operating an OpenID Provider at
         login.shop.example.  As part of that deployment, the retailer should
         consider replacing the login dialog on each site with a single "sign-in"
-        button that redirects to login.shop.example and presents a unifed login
+        button that redirects to login.shop.example and presents a unified login
         experience.  In some circumstances, however, it may be desireable to
         continue to accept credentials directly on each separate domain.
       </t>
@@ -165,7 +165,7 @@ req.addEventListener('load', function() {
 });
 
 req.open('POST', 'https://server.example.com/co/authenticate');
-req.withCredentials = true;
+// OPTIONAL: req.withCredentials = true;
 req.setRequestHeader('Content-Type', 'application/json');
 var data = {
   client_id: 's6BhdRkqt3',
@@ -188,7 +188,6 @@ POST /co/authenticate HTTP/1.1
 Host: server.example.com
 Origin: https://www.example.net
 Content-Type: application/json
-Cookie: sid=xxxxxxxx
 
 { "client_id": "s6BhdRkqt3", "credential_type": "password",
   "username": "jane", "password": "s3cr1t" }
@@ -221,7 +220,7 @@ Cookie: sid=xxxxxxxx
         </t>
         <t>
           <list style='hanging' hangIndent='6'>
-            <t hangText='id_token'>
+            <t hangText='login_ticket'>
               <vspace />
               REQUIRED. The ID Token containing claims about the authenticated
               End-User.
@@ -320,6 +319,60 @@ Cookie: sid=xxxxxxxx
             </t>
           </list>
         </t>
+      </section>
+    </section>
+    
+    <section title="Authentication Credentials">
+      <t>
+        To authenticate an End-User, the client first obtains the End-User's
+        credentials.  This specification defines a single credential type:
+        password.  It also provides an extension mechanism for defining
+        additional credential types.
+      </t>
+      
+      <section title="End-User Password Credentials">
+        <t>
+          The end-user password credentials type is suitable in cases where the
+          End-User has a trust relationship with the client, such as a website
+          known to be operated by a trusted organization.  The authorization
+          server should take special care when enabling this credential type and
+          only allow it when other flows are not viable.
+        </t>
+        
+        <section title="Authentication Request">
+          <t>
+            The client makes a request to the token endpoint by adding the
+            following parameters using the <spanx style='verb'>application/json</spanx>
+            format with a character encoding of UTF-8 in the HTTP request
+            entity-body:
+          
+            <list style="hanging">
+              <t hangText="credential_type"><vspace blankLines="1"/>
+                REQUIRED.  Value MUST be set to "password".</t>
+
+              <t hangText="username"> <vspace blankLines="1"/>
+                REQUIRED.  The End-User username.</t>
+
+              <t hangText="password"> <vspace blankLines="1"/>
+                REQUIRED.  The End-User password..</t>
+                
+              <t hangText='client_id'> <vspace blankLines="1"/>
+                REQUIRED.  The client identifier..
+              </t>
+            </list>
+          </t>
+          <t>
+            The OpenID Provider MUST:
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                validate the End-User password credentials using its existing
+                password validation algorithm.
+              </t>
+            </list>
+          </t>
+        </section>
       </section>
     </section>
     
