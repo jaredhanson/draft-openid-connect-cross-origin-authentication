@@ -171,7 +171,7 @@ req.addEventListener('load', function() {
 });
 
 req.open('POST', 'https://server.example.com/co/authenticate');
-// OPTIONAL: req.withCredentials = true;
+req.withCredentials = true; // OPTIONAL
 req.setRequestHeader('Content-Type', 'application/json');
 var data = {
   client_id: 's6BhdRkqt3',
@@ -199,6 +199,28 @@ Content-Type: application/json
   "username": "jane", "password": "s3cr1t" }
 ]]></artwork>
         </figure>
+        
+        <t>
+          The Client SHOULD:
+        </t>
+        <t>
+          <list style='symbols'>
+            <t>
+              set XMLHttpRequest.withCredentials to true, which will include
+              cookies in the HTTP request and allow cookies to be set by the HTTP
+              response.  Note that even with this set, browser policy may
+              prevent this behavior.
+            </t>
+            <t>
+              include cross-origin verification parameters in the HTTP request,
+              such as those defined by Proof Key for Cross-Origin Requests by
+              OAuth Public Clients.  Such verification allows a session to be
+              initiated subsequent to the authentication request, in the
+              scenario in which cookies are unable to be set in the HTTP
+              response from the OpenID Provider.
+            </t>
+          </list>
+        </t>
         
         <t>
           The OpenID Provider MUST:
