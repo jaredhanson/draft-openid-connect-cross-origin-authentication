@@ -212,9 +212,9 @@ Content-Type: application/json
               prevent this behavior.
             </t>
             <t>
-              include cross-origin verification parameters in the HTTP request,
+              include cross-origin confirmation parameters in the HTTP request,
               such as those defined by Proof Key for Cross-Origin Requests by
-              OAuth Public Clients.  Such verification allows a session to be
+              OAuth Public Clients.  Such confirmation allows a session to be
               initiated subsequent to the authentication request, in the
               scenario in which cookies are unable to be set in the HTTP
               response from the OpenID Provider.
@@ -236,8 +236,53 @@ Content-Type: application/json
               verify that the client is allowed to use the cross-origin
               authentication flow.
             </t>
+            <t>
+              verify the authentication credentials.
+            </t>
           </list>
         </t>
+      </section>
+      
+      <section title="Session Establishment">
+        <t>
+          If the authentication request is valid and authorized, the OpenID
+          Provider SHOULD establish a session for the authenticated End-User.
+        </t>
+        
+        <t>
+          The following scenarios deserve special attention due to the security
+          implications of establishing sessions in response to cross-origin
+          requests.
+        </t>
+        
+        <section title="No Existing Session">
+          <t>
+            If no existing login session exists at the OpenID Provider, a
+            new login session can be established without adverse consequences.
+          </t>
+        </section>
+        
+        <section title="Existing Session for Same End-User">
+          <t>
+            If an existing login session exists at the OpenID Provider for the
+            authenticated End-User, the existing session should be preserved.
+            An additional login session SHOULD NOT be established.
+          </t>
+        </section>
+        
+        <section title="Existing Session for Different End-User">
+          <t>
+            If an existing login session exists at the OpenID Provider for an
+            End-User other than the authenticated End-User, an additional login
+            session SHOULD be established for the authenticated End-User.
+            The existing session for the other End-User SHOULD be preserved.
+          </t>
+          <t>
+            In particular, the other End-User's session SHOULD NOT be terminated
+            in order to avoid adverse consequences with other Clients that may
+            have already federated the other End-User's session.
+          </t>
+        </section>
       </section>
       
       <section title='Authentication Response'>

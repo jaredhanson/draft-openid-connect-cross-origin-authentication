@@ -194,7 +194,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
    });
 
    req.open('POST', 'https://server.example.com/co/authenticate');
-   // OPTIONAL: req.withCredentials = true;
+   req.withCredentials = true; // OPTIONAL
    req.setRequestHeader('Content-Type', 'application/json');
    var data = {
      client_id: 's6BhdRkqt3',
@@ -216,7 +216,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
    { "client_id": "s6BhdRkqt3", "credential_type": "password",
      "username": "jane", "password": "s3cr1t" }
 
-   The OpenID Provider MUST:
+   The Client SHOULD:
 
 
 
@@ -226,6 +226,20 @@ Hanson                  Expires October 22, 2017                [Page 4]
 Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
 
+   o  set XMLHttpRequest.withCredentials to true, which will include
+      cookies in the HTTP request and allow cookies to be set by the
+      HTTP response.  Note that even with this set, browser policy may
+      prevent this behavior.
+
+   o  include cross-origin confirmation parameters in the HTTP request,
+      such as those defined by Proof Key for Cross-Origin Requests by
+      OAuth Public Clients.  Such confirmation allows a session to be
+      initiated subsequent to the authentication request, in the
+      scenario in which cookies are unable to be set in the HTTP
+      response from the OpenID Provider.
+
+   The OpenID Provider MUST:
+
    o  ensure that the Origin header is present and that its value
       corresponds to the Client's origin previously established with the
       authorization server during the client registration process,
@@ -233,7 +247,49 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
    o  verify that the client is allowed to use the cross-origin
       authentication flow.
 
-3.2.  Authentication Response
+   o  verify the authentication credentials.
+
+3.2.  Session Establishment
+
+   If the authentication request is valid and authorized, the OpenID
+   Provider SHOULD establish a session for the authenticated End-User.
+
+   The following scenarios deserve special attention due to the security
+   implications of establishing sessions in response to cross-origin
+   requests.
+
+3.2.1.  No Existing Session
+
+   If no existing login session exists at the OpenID Provider, a new
+   login session can be established without adverse consequences.
+
+3.2.2.  Existing Session for Same End-User
+
+   If an existing login session exists at the OpenID Provider for the
+   authenticated End-User, the existing session should be preserved.  An
+   additional login session SHOULD NOT be established.
+
+3.2.3.  Existing Session for Different End-User
+
+   If an existing login session exists at the OpenID Provider for an
+   End-User other than the authenticated End-User, an additional login
+
+
+
+
+Hanson                  Expires October 22, 2017                [Page 5]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
+
+
+   session SHOULD be established for the authenticated End-User.  The
+   existing session for the other End-User SHOULD be preserved.
+
+   In particular, the other End-User's session SHOULD NOT be terminated
+   in order to avoid adverse consequences with other Clients that may
+   have already federated the other End-User's session.
+
+3.3.  Authentication Response
 
    If the authentication request is valid and authorized, the OpenID
    Provider constructs the response by adding the following parameters
@@ -258,7 +314,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
    an ID Token and/or Access Token and MAY be exchanged in a mode that
    does not require further End-User interaction.
 
-3.3.  Authentication Error Response
+3.4.  Authentication Error Response
 
    If the authentication request failed End-User authentication or is
    invalid, the authorization server responds with an HTTP 400 (Bad
@@ -277,7 +333,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
 
 
-Hanson                  Expires October 22, 2017                [Page 5]
+Hanson                  Expires October 22, 2017                [Page 6]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
@@ -333,7 +389,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
 
 
-Hanson                  Expires October 22, 2017                [Page 6]
+Hanson                  Expires October 22, 2017                [Page 7]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
@@ -389,7 +445,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
 
 
-Hanson                  Expires October 22, 2017                [Page 7]
+Hanson                  Expires October 22, 2017                [Page 8]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
@@ -445,7 +501,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
 
 
-Hanson                  Expires October 22, 2017                [Page 8]
+Hanson                  Expires October 22, 2017                [Page 9]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
@@ -501,4 +557,4 @@ Author's Address
 
 
 
-Hanson                  Expires October 22, 2017                [Page 9]
+Hanson                  Expires October 22, 2017               [Page 10]
