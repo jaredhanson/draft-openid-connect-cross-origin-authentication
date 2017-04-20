@@ -72,6 +72,12 @@
       <section title="Terminology">
         <t>
           This specification also defines the following terms:
+          
+          <list style="hanging"> 
+          <t hangText="Login Ticket:"><vspace blankLines="1"/>
+            A single-use ticket representing a valid authentication which can be
+            exchanged for tokens, including access tokens and ID tokens.</t>
+          </list> 
         </t>
       </section>
     </section>
@@ -222,8 +228,7 @@ Content-Type: application/json
           <list style='hanging' hangIndent='6'>
             <t hangText='login_ticket'>
               <vspace />
-              REQUIRED. The ID Token containing claims about the authenticated
-              End-User.
+              REQUIRED. The Login Ticket representing the valid authentication.
             </t>
           </list>
         </t>
@@ -233,33 +238,18 @@ Content-Type: application/json
           defined by <xref target='RFC4627'/>.
         </t>
         <t>
-          In the case of a cross-origin authentication request, the RP may
-          already posess identity information about the user, such as a username
-          or email address.  Furthermore, because authentication is performed
-          directly between the Client and OP, without using HTTP redirection, it
-          is not possible to prompt the user for consent to share protected
-          information or verify the Client's identity and location to which
-          tokens will be issued.
+          When making use of cross-origin authentication, communication occurs
+          directly between the Client and OP, without using HTTP redirection.
+          Furthermore, clients implemented in a browser are public clients and
+          unable to be authenticated.  These two limitations imply that it is
+          impossible to verify the identity of the Client making the request.
         </t>
         <t>
-          Due to these limitations the OpenID Provider:
-        </t>
-        <t>
-          <list style='symbols'>
-            <t>
-              SHOULD NOT add claims to the ID Token that were not otherwise
-              revealed to the Client during the authentication request,
-            </t>
-            <t>
-              MAY encrypt the ID Token so that it does not reveal any claims
-              to the Client.  A token encrypted in this manner MAY be used by
-              the client for session initiation,
-            </t>
-            <t>
-              MUST NOT issue an access token or other credential that would
-              permit access to additional information beyond identity claims.
-            </t>
-          </list>
+          Due to the lack of Client identity verification, the Login Ticket MUST
+          be confidentiality protected from the Client.  The Login Ticket SHOULD
+          be exchanged by the Client at the Authorization Endpoint for an ID
+          Token and/or Access Token and MAY be exchanged in a mode that does not
+          require further End-User interaction.
         </t>
       </section>
       

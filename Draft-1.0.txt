@@ -98,13 +98,13 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
    This specification also defines the following terms:
 
-2.  Overview
+   Login Ticket:
 
-   OpenID Connect, in building upon OAuth 2.0, allows a service to
-   delegate authentication responsibilities to a centralized
-   authorization server.  In many deployment scenarios, enabling single
-   sign-on is a motivating factor for implementing OpenID Connect, as it
-   allows a user to access multiple services without re-authentication.
+      A single-use ticket representing a valid authentication which can
+      be exchanged for tokens, including access tokens and ID tokens.
+
+
+
 
 
 
@@ -113,6 +113,14 @@ Hanson                  Expires October 22, 2017                [Page 2]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
+
+2.  Overview
+
+   OpenID Connect, in building upon OAuth 2.0, allows a service to
+   delegate authentication responsibilities to a centralized
+   authorization server.  In many deployment scenarios, enabling single
+   sign-on is a motivating factor for implementing OpenID Connect, as it
+   allows a user to access multiple services without re-authentication.
 
    In some instances a service may have multiple domains that act as
    primary points of interaction with the user.  For example, an online
@@ -153,6 +161,15 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
    The client makes a request to the cross-origin authentication
    endpoint by sending the following parameters using the "application/
+
+
+
+
+Hanson                  Expires October 22, 2017                [Page 3]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
+
+
    json" format with a character encoding of UTF-8 in the HTTP request
    entity-body:
 
@@ -162,13 +179,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
    client_id
          REQUIRED.  The client identifier.
-
-
-
-Hanson                  Expires October 22, 2017                [Page 3]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
-
 
    The request MUST include additional parameters that are interpreted
    according to a credential type definition.
@@ -208,16 +218,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
    The OpenID Provider MUST:
 
-   o  ensure that the Origin header is present and that its value
-      corresponds to the Client's origin previously established with the
-      authorization server during the client registration process,
-
-   o  verify that the client is allowed to use the cross-origin
-      authentication flow.
-
-
-
-
 
 
 
@@ -226,6 +226,13 @@ Hanson                  Expires October 22, 2017                [Page 4]
 Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
 
+   o  ensure that the Origin header is present and that its value
+      corresponds to the Client's origin previously established with the
+      authorization server during the client registration process,
+
+   o  verify that the client is allowed to use the cross-origin
+      authentication flow.
+
 3.2.  Authentication Response
 
    If the authentication request is valid and authorized, the OpenID
@@ -233,31 +240,23 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
    to the entity-body of the HTTP response with a 200 (OK) status code:
 
    login_ticket
-         REQUIRED.  The ID Token containing claims about the
-         authenticated End-User.
+         REQUIRED.  The Login Ticket representing the valid
+         authentication.
 
    The parameters are included in the entity body of the HTTP response
    using the "application/json" media type as defined by [RFC4627].
 
-   In the case of a cross-origin authentication request, the RP may
-   already posess identity information about the user, such as a
-   username or email address.  Furthermore, because authentication is
-   performed directly between the Client and OP, without using HTTP
-   redirection, it is not possible to prompt the user for consent to
-   share protected information or verify the Client's identity and
-   location to which tokens will be issued.
+   When making use of cross-origin authentication, communication occurs
+   directly between the Client and OP, without using HTTP redirection.
+   Furthermore, clients implemented in a browser are public clients and
+   unable to be authenticated.  These two limitations imply that it is
+   impossible to verify the identity of the Client making the request.
 
-   Due to these limitations the OpenID Provider:
-
-   o  SHOULD NOT add claims to the ID Token that were not otherwise
-      revealed to the Client during the authentication request,
-
-   o  MAY encrypt the ID Token so that it does not reveal any claims to
-      the Client.  A token encrypted in this manner MAY be used by the
-      client for session initiation,
-
-   o  MUST NOT issue an access token or other credential that would
-      permit access to additional information beyond identity claims.
+   Due to the lack of Client identity verification, the Login Ticket
+   MUST be confidentiality protected from the Client.  The Login Ticket
+   SHOULD be exchanged by the Client at the Authorization Endpoint for
+   an ID Token and/or Access Token and MAY be exchanged in a mode that
+   does not require further End-User interaction.
 
 3.3.  Authentication Error Response
 
@@ -274,6 +273,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
                unsupported parameter value (other than credential type),
                repeats a parameter, or is otherwise malformed.
 
+         unauthorized_client
 
 
 
@@ -282,7 +282,6 @@ Hanson                  Expires October 22, 2017                [Page 5]
 Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
 
-         unauthorized_client
                The client is not authorized to use cross-origin
                authentication or the origin of the request is invalid.
 
@@ -330,6 +329,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
    character encoding of UTF-8 in the HTTP request entity-body:
 
    credential_type
+
 
 
 
