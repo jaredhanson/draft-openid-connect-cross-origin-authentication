@@ -305,6 +305,14 @@ Content-Type: application/json
           defined by <xref target='RFC4627'/>.
         </t>
         <t>
+          The Login Ticket MUST be bound to the session established for the
+          authenticated End-User.  If the Client included cross-origin
+          confirmation parameters in the authentication request, the OpenID
+          Provider MUST bind the Login Ticket in such a way that the parameters
+          can be verified prior to establishing a login session if subsequent
+          session initiation is necessary.
+        </t>
+        <t>
           When making use of cross-origin authentication, communication occurs
           directly between the Client and OP, without using HTTP redirection.
           Furthermore, clients implemented in a browser are public clients and
@@ -433,35 +441,26 @@ Content-Type: application/json
       </section>
     </section>
     
-    <section title="Session Initiation and Authorization">
+    <section title="Obtaining Tokens">
       <t>
-        Having authenticated an End-User, it is often desirable to establish a
-        session and obtain authorization.  Session establishment enables single
-        sign-on, so the End-User doesn't need to authenticate to the OpenID
-        Provider each time they use a new app (unless required by authorization
-        server policy).  Authorization allows the Client to obtain additional
-        access to the End-User's identity information and protected resources.
+        Having authenticated an End-User's credentials, a Client needs to obtain
+        an ID Token that contains claims about the Authentication event.  In
+        order to receive tokens, the Client makes a standard Authentication
+        Request to the Authorization Endpoint.
       </t>
       <t>
-        In order to ensure that the session is established in the same
-        User-Agent from which the Authentication Request was sent, session
-        establishment makes use of the Authorization Endpoint, using
-        HTTP redirection, as defined by OAuth 2.0 and extended by OpenID
-        Connect.
-      </t>
-      <t>
-        Similarly, use of HTTP redirection allows the Client's identity to be
-        verified, and consent to be obtained for authorization.  It also ensures
-        that any tokens issued are delivered to the intedended client via a
-        redirect endpoint or HTML5 web messaging.
+        Use of the Authorization Endpoint allows the Client's identity to be
+        verified prior to issuing tokens, preventing the disclosure of protected
+        information to unauthorized clients.  It also allows further consent to
+        be obtained, in cases where authentication alone is insufficient.
       </t>
       
       <section title='Authorization Request'>
         <t>
           The client makes a request to the Authorization Endpoint in the manner
-          specified by OpenID Connect.  If session initiation is requested, the
-          ID Token from the Authentication Request is included as the value of
-          the <spanx style='verb'>id_token_hint</spanx> parameter.
+          specified by OpenID Connect.  The login_ticket returned from the
+          Cross-Origin Authentication Endpoint is included in the <spanx style='verb'>login_ticket</spanx>
+          parameter.
         </t>
         <figure>
           <preamble>
@@ -470,8 +469,8 @@ Content-Type: application/json
           </preamble>
           <artwork><![CDATA[
 GET /authorize?
-  response_type=token
-  &id_token_hint=ey...
+  response_type=id_token%20token
+  &login_ticket=2YotnFZFEjr1zCsicMWpAA
   &scope=openid%20profile%20email
   &client_id=s6BhdRkqt3
   &state=af0ifjsldkj
