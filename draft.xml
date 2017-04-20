@@ -455,7 +455,7 @@ Content-Type: application/json
         be obtained, in cases where authentication alone is insufficient.
       </t>
       
-      <section title='Authorization Request'>
+      <section title='Authentication Request'>
         <t>
           The client makes a request to the Authorization Endpoint in the manner
           specified by OpenID Connect.  The login_ticket returned from the
@@ -480,35 +480,52 @@ Host: server.example.com
         </figure>
       </section>
       
-      <section title='Session Initiation Validation'>
+      <section title='Authentication Request Validation'>
         <t>
-          If, as a result of processing the authorization request, the OpenID
-          Provider initiates a session, it MUST validate the id_token in the
-          request received as follows:
+          The Authorization Server MUST validate the request received as follows:
         </t>
         <t>
           <list style='numbers'>
             <t>
-              Verify the signature and/or encryption applied to the ID Token.
+              The Authorization Server MUST validate all the OAuth 2.0
+              parameters according to the OAuth 2.0 specification.
             </t>
             <t>
-              The Issuer Identifier for the OpenID Provider MUST exactly match
-              the value of the iss (issuer) claim.
+              The Authorization Server MUST validate all the OpenID Connect
+              parameters according to the OpenID Connect specification.
             </t>
             <t>
-              The OpenID Provider MUST validate that the aud (audience) claim
-              contains its Issuer Identifier.
+              If the End-User identified by the Login Ticket has a login
+              session, verify that the Login Ticket is bound to the session.
+              If so, continue normal processing.  If not, respond with an
+              access_denied error.
             </t>
             <t>
-              The OpenID Provider MUST validate that the azp (authorized party)
-              claim is present and that it matches the client_id value in the
-              authorization request.
-            </t>
-            <t>
-              The OpenID Provider MUST validate that the rfp (request forgery
-              protection) claim is present and contains a verifiable identifier
-              for the browser session, that cannot be guessed by a third party,
-              including the Client.
+              If the End-User identified by the Login Ticket does not have a
+              login session:
+              
+              <list style='letters'>
+                <t>
+                  If the Login Ticket does not have any cross-origin
+                  confirmation parameters, respond with an access_denied error.
+                </t>
+                <t>
+                  If the Login Ticket does have cross-origin confirmation
+                  parameters, start a session initiation flow.
+                </t>
+                <t>
+                  Verify the cross-origin confirmation parameters.  The exact
+                  confirmation mechanism is beyond the scope of this
+                  specification.  Use of Proof Key for Cross-Origin Requests by
+                  OAuth Public Clients is RECOMMENDED.
+                </t>
+                <t>
+                  If the cross-origin confirmation parameters are verified,
+                  establish a login session for the End-User identified by the
+                  Login Ticket and resume normal processing.  Otherwise, respond
+                  with an access_denied error.
+                </t>
+              </list>
             </t>
           </list>
         </t>

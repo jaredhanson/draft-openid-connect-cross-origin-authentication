@@ -302,6 +302,13 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
    The parameters are included in the entity body of the HTTP response
    using the "application/json" media type as defined by [RFC4627].
 
+   The Login Ticket MUST be bound to the session established for the
+   authenticated End-User.  If the Client included cross-origin
+   confirmation parameters in the authentication request, the OpenID
+   Provider MUST bind the Login Ticket in such a way that the parameters
+   can be verified prior to establishing a login session if subsequent
+   session initiation is necessary.
+
    When making use of cross-origin authentication, communication occurs
    directly between the Client and OP, without using HTTP redirection.
    Furthermore, clients implemented in a browser are public clients and
@@ -324,13 +331,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
    error
          REQUIRED.  A single ASCII error code from the following:
 
-         invalid_request
-               The request is missing a required parameter, includes an
-               unsupported parameter value (other than credential type),
-               repeats a parameter, or is otherwise malformed.
-
-         unauthorized_client
-
 
 
 Hanson                  Expires October 22, 2017                [Page 6]
@@ -338,6 +338,12 @@ Hanson                  Expires October 22, 2017                [Page 6]
 Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
 
+         invalid_request
+               The request is missing a required parameter, includes an
+               unsupported parameter value (other than credential type),
+               repeats a parameter, or is otherwise malformed.
+
+         unauthorized_client
                The client is not authorized to use cross-origin
                authentication or the origin of the request is invalid.
 
@@ -378,13 +384,7 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
    server should take special care when enabling this credential type
    and only allow it when other flows are not viable.
 
-4.1.1.  Authentication Request
 
-   The client makes a request to the token endpoint by adding the
-   following parameters using the "application/json" format with a
-   character encoding of UTF-8 in the HTTP request entity-body:
-
-   credential_type
 
 
 
@@ -393,6 +393,14 @@ Hanson                  Expires October 22, 2017                [Page 7]
 
 Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
 
+
+4.1.1.  Authentication Request
+
+   The client makes a request to the token endpoint by adding the
+   following parameters using the "application/json" format with a
+   character encoding of UTF-8 in the HTTP request entity-body:
+
+   credential_type
 
       REQUIRED.  Value MUST be set to "password".
 
@@ -413,33 +421,25 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
    o  validate the End-User password credentials using its existing
       password validation algorithm.
 
-5.  Session Initiation and Authorization
+5.  Obtaining Tokens
 
-   Having authenticated an End-User, it is often desirable to establish
-   a session and obtain authorization.  Session establishment enables
-   single sign-on, so the End-User doesn't need to authenticate to the
-   OpenID Provider each time they use a new app (unless required by
-   authorization server policy).  Authorization allows the Client to
-   obtain additional access to the End-User's identity information and
-   protected resources.
+   Having authenticated an End-User's credentials, a Client needs to
+   obtain an ID Token that contains claims about the Authentication
+   event.  In order to receive tokens, the Client makes a standard
+   Authentication Request to the Authorization Endpoint.
 
-   In order to ensure that the session is established in the same User-
-   Agent from which the Authentication Request was sent, session
-   establishment makes use of the Authorization Endpoint, using HTTP
-   redirection, as defined by OAuth 2.0 and extended by OpenID Connect.
+   Use of the Authorization Endpoint allows the Client's identity to be
+   verified prior to issuing tokens, preventing the disclosure of
+   protected information to unauthorized clients.  It also allows
+   further consent to be obtained, in cases where authentication alone
+   is insufficient.
 
-   Similarly, use of HTTP redirection allows the Client's identity to be
-   verified, and consent to be obtained for authorization.  It also
-   ensures that any tokens issued are delivered to the intedended client
-   via a redirect endpoint or HTML5 web messaging.
-
-5.1.  Authorization Request
+5.1.  Authentication Request
 
    The client makes a request to the Authorization Endpoint in the
-   manner specified by OpenID Connect.  If session initiation is
-   requested, the ID Token from the Authentication Request is included
-   as the value of the "id_token_hint" parameter.
-
+   manner specified by OpenID Connect.  The login_ticket returned from
+   the Cross-Origin Authentication Endpoint is included in the
+   "login_ticket" parameter.
 
 
 
@@ -454,36 +454,57 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
    by the Client to the Authorization Server:
 
    GET /authorize?
-     response_type=token
-     &id_token_hint=ey...
+     response_type=id_token%20token
+     &login_ticket=2YotnFZFEjr1zCsicMWpAA
      &scope=openid%20profile%20email
      &client_id=s6BhdRkqt3
      &state=af0ifjsldkj
      &redirect_uri=https%3A%2F%2Fclient.example.org%2Fcb HTTP/1.1
    Host: server.example.com
 
-5.2.  Session Initiation Validation
+5.2.  Authentication Request Validation
 
-   If, as a result of processing the authorization request, the OpenID
-   Provider initiates a session, it MUST validate the id_token in the
-   request received as follows:
+   The Authorization Server MUST validate the request received as
+   follows:
 
-   1.  Verify the signature and/or encryption applied to the ID Token.
+   1.  The Authorization Server MUST validate all the OAuth 2.0
+       parameters according to the OAuth 2.0 specification.
 
-   2.  The Issuer Identifier for the OpenID Provider MUST exactly match
-       the value of the iss (issuer) claim.
+   2.  The Authorization Server MUST validate all the OpenID Connect
+       parameters according to the OpenID Connect specification.
 
-   3.  The OpenID Provider MUST validate that the aud (audience) claim
-       contains its Issuer Identifier.
+   3.  If the End-User identified by the Login Ticket has a login
+       session, verify that the Login Ticket is bound to the session.
+       If so, continue normal processing.  If not, respond with an
+       access_denied error.
 
-   4.  The OpenID Provider MUST validate that the azp (authorized party)
-       claim is present and that it matches the client_id value in the
-       authorization request.
+   4.  If the End-User identified by the Login Ticket does not have a
+       login session:
 
-   5.  The OpenID Provider MUST validate that the rfp (request forgery
-       protection) claim is present and contains a verifiable identifier
-       for the browser session, that cannot be guessed by a third party,
-       including the Client.
+       A.  If the Login Ticket does not have any cross-origin
+           confirmation parameters, respond with an access_denied error.
+
+       B.  If the Login Ticket does have cross-origin confirmation
+           parameters, start a session initiation flow.
+
+       C.  Verify the cross-origin confirmation parameters.  The exact
+           confirmation mechanism is beyond the scope of this
+           specification.  Use of Proof Key for Cross-Origin Requests by
+           OAuth Public Clients is RECOMMENDED.
+
+       D.  If the cross-origin confirmation parameters are verified,
+           establish a login session for the End-User identified by the
+           Login Ticket and resume normal processing.  Otherwise,
+           respond with an access_denied error.
+
+
+
+
+
+Hanson                  Expires October 22, 2017                [Page 9]
+
+Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
+
 
 6.  Normative References
 
@@ -496,15 +517,6 @@ Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
               JavaScript Object Notation (JSON)", RFC 4627,
               DOI 10.17487/RFC4627, July 2006,
               <http://www.rfc-editor.org/info/rfc4627>.
-
-
-
-
-
-Hanson                  Expires October 22, 2017                [Page 9]
-
-Internet-Draft OpenID Connect Cross-Origin Authentication     April 2017
-
 
    [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
               RFC 6749, DOI 10.17487/RFC6749, October 2012,
@@ -522,18 +534,6 @@ Author's Address
 
    Email: jaredhanson@gmail.com
    URI:   http://www.jaredhanson.net/
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
