@@ -123,7 +123,7 @@
       </t>
       <t>
         Use of the cross-origin authentication endpoint requires direct Client
-        access to the End-User's credentials.  The credentials should only used
+        access to the End-User's credentials.  The credentials should only be used
         when there is a high degree of trust between the End-User and the
         Client.
       </t>
